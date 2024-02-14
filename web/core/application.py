@@ -8,10 +8,7 @@ from typing import (
     Sequence,
     Coroutine
 )
-from web.http import (
-    HttpRequest,
-    HttpResponse
-)
+from web.http import HttpResponse
 
 View = Callable[
     ...,
