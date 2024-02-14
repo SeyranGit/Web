@@ -1,10 +1,5 @@
 # base http file.
-from abc import abstractmethod
-from typing import (
-    Sequence,
-    Generator,
-    Any
-)
+from typing import Generator
 from web.utils import decode
 
 HTTP_STATUS_100 = (100, 'Continue')
@@ -77,7 +72,8 @@ def correct(s: bytes | str) -> str:
 
 
 class WebDict(dict):
-    def __init__(self, d: dict = {}) -> None:
+    def __init__(self, d: dict | None = None) -> None:
+        super().__init__()
         if isinstance(d, dict):
             self.update(d)
         elif isinstance(d, WebDict):
@@ -85,7 +81,7 @@ class WebDict(dict):
         else:
             raise TypeError
 
-    def update(self, d: dict[Any, Any]) -> None:
+    def update(self, d) -> None:
         for key, value in d.items():
             self[key] = value
 
