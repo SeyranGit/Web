@@ -2,9 +2,6 @@ __all__ = [
     'HttpResponse'
 ]
 
-from typing import Sequence
-
-from web.utils import encode
 from web.http import (
     BaseHttp,
     HttpStatusType,
@@ -34,7 +31,7 @@ class HttpResponse(BaseHttp):
     def __init__(
             self,
             status: HttpStatusType,
-            headers: dict = {},
+            headers: dict | None = None,
             body: bytes = b''
     ) -> None:
         if not isinstance(body, bytes):
