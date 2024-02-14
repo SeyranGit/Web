@@ -16,7 +16,6 @@ from uvicorn.lifespan.on import (
 from typing import (
     Callable,
     Sequence,
-    Awaitable,
     Coroutine,
     Any,
     Union
@@ -25,10 +24,9 @@ from web.http import (
     HttpRequest,
     HttpResponse,
     HTTP_STATUS_404,
-    HTTP_STATUS_200,
     HTTP_STATUS_301
 )
-from web.core.excaptions import (
+from web.core.exceptions import (
     ApplicationNotInit,
     InvalidReturnType
 )
@@ -55,6 +53,17 @@ UvicornReceiveMethod = Callable[
 ]
 
 
+def get_app():
+    """
+    After the application is initialized,
+    returns an instance of the App class.
+    Raises an exception "ApplicationNotInit"
+    before initialization.
+    """
+    raise ApplicationNotInit(
+        'Application is not initialized.')
+
+
 def exc_handler(coro):
     """
     A decorator that allows you to handle
@@ -68,7 +77,7 @@ def exc_handler(coro):
             return (
                 await coro(*args, **kwargs)
             )
-        except Exception as exc:
+        except Exception:
             _traceback = traceback.format_exc()
             app = get_app()
             if app.settings.DEBUG:
@@ -95,7 +104,8 @@ class Asgi:
         app.server_type = 'uvicorn'
         self.app = app
 
-    async def body(self, receive: UvicornReceiveMethod) -> bytes:
+    @staticmethod
+    async def get_body(receive: UvicornReceiveMethod) -> bytes:
         body = b''
 
         while True:
@@ -109,9 +119,10 @@ class Asgi:
 
         return body
 
-    def uvicorn_response(self, response: HttpResponse) -> Sequence[dict]:
+    @staticmethod
+    def uvicorn_response(response: HttpResponse) -> Sequence[dict]:
         """
-        Generates an http response from
+        Generates a http response from
         an HttpResponse object that is
         understandable to the uvicorn server.
         """
@@ -143,7 +154,7 @@ class Asgi:
             self.app.routing(
                 HttpRequest(
                     scope,
-                    await self.body(receive)
+                    await self.get_body(receive)
                 )
             )
         )
@@ -189,12 +200,14 @@ class App:
 
     def init(self):
         """
-
+        Initializes the application.
         """
         global get_app
 
-        def get_app():
+        def get_app() -> App:
             return self
+
+        return get_app()
 
     def run(self):
         """
@@ -212,12 +225,12 @@ class App:
     def asgi(self) -> Asgi:
         return Asgi(self)
 
+    @staticmethod
     def redirection(
-            self,
             request: HttpRequest
     ) -> Union[HttpResponse, None]:
         """
-        Returns an http redirect response
+        Returns a http redirect response
         if it is determined that the url
         address does not end with a "/" character.
         """
@@ -232,8 +245,8 @@ class App:
                 )
             )
 
+    @staticmethod
     async def traversal_by_urlpatterns(
-            self,
             root_url: str,
             app: Application,
             request: HttpRequest
@@ -247,12 +260,12 @@ class App:
         HttpResponse and the presentation itself to the caller.
         """
         for url, view in app:
-            url, vars = matching(
+            url, variables = matching(
                 merge_url(root_url, url),
                 request.path
             )
-            if vars or request.path == url:
-                response = await view(request, **vars)
+            if variables or request.path == url:
+                response = await view(request, **variables)
                 return (
                     view,
                     not_found() if not chack_response(response) else response
@@ -326,17 +339,6 @@ def not_found() -> HttpResponse:
             }
         )
     )
-
-
-def get_app():
-    """
-    After the application is initialized,
-    returns an instance of the App class.
-    Raises an exception "ApplicationNotInit"
-    before initialization.
-    """
-    raise ApplicationNotInit(
-        'Application is not initialized.')
 
 
 @exc_handler
