@@ -34,7 +34,7 @@ def lunch_trace(app):
     )
     print(
         f'Launched {app.settings.APP_NAME} application:\n'
-        f'  Runing on the http://{host}.\n'
+        f'  Running on the http://{host}.\n'
         f'  Installed applications:'
     )
     for app_name, app in app.settings.applications.items():
