@@ -3,6 +3,7 @@ __all__ = [
 ]
 
 from web.core.application import Application
+from web.core.exceptions import ApplicationNotFound
 
 
 class Settings:
