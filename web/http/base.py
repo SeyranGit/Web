@@ -72,12 +72,15 @@ def correct(s: bytes | str) -> str:
 
 
 class WebDict(dict):
-    def __init__(self, d: dict | None = None) -> None:
+    def __init__(self, _dict: dict | None = None) -> None:
         super().__init__()
-        if isinstance(d, dict):
-            self.update(d)
-        elif isinstance(d, WebDict):
-            super().update(d)
+        if _dict is None:
+            _dict = {}
+
+        if isinstance(_dict, dict):
+            self.update(_dict)
+        elif isinstance(_dict, WebDict):
+            super().update(_dict)
         else:
             raise TypeError
 
