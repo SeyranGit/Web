@@ -1,6 +1,5 @@
 import socket
 import asyncio
-import sys
 
 
 def create_socket(host='0.0.0.0', port=8000):
@@ -34,8 +33,6 @@ async def main(app, coro, sock: socket.socket):
                 client_handler(app, coro, _sock)
             )
         )
-
-    return 0
 
 
 def run_server(app, coro):
