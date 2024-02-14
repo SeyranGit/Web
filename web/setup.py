@@ -6,11 +6,9 @@ import os
 
 from pathlib import Path
 from importlib import import_module
-from typing import (
-    Sequence,
-    NoReturn
-)
-from web.core.excaptions import (
+from typing import NoReturn
+
+from web.core.exceptions import (
     ModuleMissingError,
     ApplicationNotFound
 )
