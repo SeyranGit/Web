@@ -1,5 +1,5 @@
 <p>
-  <a href="python.org">
+  <a href="https://www.python.org">
     <img alt="Python 3.12.2 Release" src="https://www.svgrepo.com/show/354238/python.svg">
   </a>
 </p>
