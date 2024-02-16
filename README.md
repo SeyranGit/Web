@@ -2,11 +2,12 @@
 ### A simple web framework for creating simple web applications.  
 **Project structure**  
 ```
-|--- MySite
-  - run.py
-  - MySite
-      - settings.py
-      - asgi.py
+MySite
+├── run.py
+├── MySite
+|   ├── __init__.py
+|   ├── settings.py
+└── └── asgi.py
 ```
 
 ```python  
