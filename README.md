@@ -52,3 +52,11 @@ ROOT_URLPATTERNS = [
 ```
 ---
 
+- MySite/asgi.py
+```python  
+from web.core.asgi import asgi_app
+
+app = asgi_app()
+```
+---
+
