@@ -1,4 +1,4 @@
-![![python](https://www.python.org/static/favicon.ico)](https://www.python.org/)
+[![python](https://www.python.org/static/favicon.ico)3.12.2](https://www.python.org/)
 
 <p>
   <a href="https://www.python.org/">
