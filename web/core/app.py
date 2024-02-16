@@ -24,11 +24,15 @@ from web.http import (
     HttpRequest,
     HttpResponse,
     HTTP_STATUS_404,
-    HTTP_STATUS_301
+    HTTP_STATUS_301,
+    HTTP_STATUS_200,
+    HTTP_STATUS_500,
+    HttpStatusType
 )
 from web.core.exceptions import (
     ApplicationNotInit,
-    InvalidReturnType
+    InvalidReturnType,
+    ServerTypeError
 )
 from web.core.uvc import (
     uvicorn_response,
@@ -38,10 +42,16 @@ from web.core.application import (
     Application,
     View
 )
-from web.core import Settings
+from web.utils import (
+    lunch_trace,
+    to_correct,
+    merge_url,
+    request_trace
+)
 from web.core.urlmatch import pattern_matching
+from web.core.statics import load_static
 from web.server import run_server
-from web.utils import lunch_trace
+from web.core import Settings
 
 UvicornSendMethod = Callable[
     [LifespanSendMessage],
@@ -60,8 +70,37 @@ def get_app():
     Raises an exception "ApplicationNotInit"
     before initialization.
     """
+    if isinstance(App.instance, App):
+        return App.instance
+
     raise ApplicationNotInit(
         'Application is not initialized.')
+
+
+def stop_aloop():
+    asyncio.get_running_loop().stop()
+
+
+async def get_exception_response(
+        app: 'App',
+        status: HttpStatusType,
+        _traceback: str
+) -> Union[bytes, None]:
+    match app.server_type:
+        case 'std':
+            return (
+                HttpResponse(
+                    status=status,
+                    body=_traceback.encode()
+                ).as_http()
+            )
+
+        case 'uvicorn':
+            return await uvc_exc(
+                _traceback, status[0], app.send)
+        case _:
+            stop_aloop()
+            raise ServerTypeError(app.server_type)
 
 
 def exc_handler(coro):
@@ -82,19 +121,23 @@ def exc_handler(coro):
             app = get_app()
             if app.settings.DEBUG:
                 sys.stderr.write(_traceback)
-                match app.server_type:
-                    case 'std':
-                        return HttpResponse(
-                            status=HTTP_STATUS_404,
-                            body=_traceback.encode()
-                        ).as_http()
+                return (
+                    await get_exception_response(
+                        app, HTTP_STATUS_404, _traceback
+                    )
+                )
 
-                    case 'uvicorn':
-                        return await uvc_exc(
-                            _traceback, app.send)
-
-            asyncio.get_running_loop().stop()
-            raise
+            if app.settings.STOP_ON_EXCEPTION:
+                stop_aloop()
+                raise
+            else:
+                return (
+                    await get_exception_response(
+                        app,
+                        HTTP_STATUS_500,
+                        HTTP_STATUS_500[1]
+                    )
+                )
 
     return _coro
 
@@ -106,6 +149,9 @@ class Asgi:
 
     @staticmethod
     async def get_body(receive: UvicornReceiveMethod) -> bytes:
+        """
+        Read and returns all body.
+        """
         body = b''
 
         while True:
@@ -148,7 +194,7 @@ class Asgi:
         """
         Method responsible for processing
         the http request, starting the
-        router and returning an http response.
+        router and returning a http response.
         """
         view, response = await (
             self.app.routing(
@@ -158,7 +204,7 @@ class Asgi:
                 )
             )
         )
-        if not chack_response(response):
+        if not check_response(response):
             response = not_found()
 
         await uvicorn_response(self.uvicorn_response(response), send)
@@ -171,7 +217,7 @@ class Asgi:
     ) -> None:
         """
         Method called by the uvicorn
-        server to process an http request.
+        server to process a http request.
         """
         if scope['type'] == 'http':
             self.app.send = send
@@ -187,6 +233,8 @@ class Asgi:
 
 
 class App:
+    instance = None
+
     send: Union[UvicornSendMethod, None]
     settings: Settings
     server_type: str
@@ -202,12 +250,7 @@ class App:
         """
         Initializes the application.
         """
-        global get_app
-
-        def get_app() -> App:
-            return self
-
-        return get_app()
+        App.instance = self
 
     def run(self):
         """
@@ -217,9 +260,7 @@ class App:
         in the configuration file and starts
         the server built into the framework.
         """
-        if self.settings.TRACING:
-            lunch_trace(self)
-
+        lunch_trace(self)
         return run_server(self, _run)
 
     def asgi(self) -> Asgi:
@@ -245,12 +286,22 @@ class App:
                 )
             )
 
+    def get_static(self, request: HttpRequest) -> HttpResponse:
+        url = to_correct(request.path)
+        if url in self.settings.statics:
+            return (
+                HttpResponse(
+                    status=HTTP_STATUS_200,
+                    body=load_static(self.settings.statics[url])
+                )
+            )
+
     @staticmethod
     async def traversal_by_urlpatterns(
             root_url: str,
             app: Application,
             request: HttpRequest
-    ) -> tuple[View | None, HttpResponse]:
+    ) -> tuple[Union[View, None], HttpResponse]:
         """
         Walk through the urlpatterns specified by
         the user in the urls file of the application
@@ -261,14 +312,14 @@ class App:
         """
         for url, view in app:
             url, variables = matching(
-                merge_url(root_url, url),
+                merge_url(root_url, to_correct(url)),
                 request.path
             )
             if variables or request.path == url:
                 response = await view(request, **variables)
                 return (
                     view,
-                    not_found() if not chack_response(response) else response
+                    not_found() if not check_response(response) else response
                 )
 
         return None, not_found()
@@ -276,16 +327,19 @@ class App:
     async def routing(
             self,
             request: HttpRequest
-    ) -> tuple[View | None, HttpResponse]:
+    ) -> tuple[Union[View, None], HttpResponse]:
         """
         Iterates through ROOT_URLPATTERNS
         and runs the method "App.traversal_by_urlpatterns"
         to check if the url matches.
         """
+        request_trace(request, self)
+        if static := self.get_static(request):
+            return None, static
+
         if redirection := self.redirection(request):
             return None, redirection
 
-        # load_static(request)
         for root_url, app_name in self.settings.ROOT_URLPATTERNS:
             app: Application = (
                 self
@@ -293,7 +347,15 @@ class App:
                 .applications
                 .get(app_name)
             )
-            return await self.traversal_by_urlpatterns(root_url, app, request)
+            if app:
+                view, response = (
+                    await self.traversal_by_urlpatterns(
+                        to_correct(root_url),
+                        app, request
+                    )
+                )
+                if view:
+                    return view, response
 
         return None, not_found()
 
@@ -308,14 +370,7 @@ def matching(
     )
 
 
-def merge_url(
-        url_1: str,
-        url_2: str
-) -> str:
-    return f'/{url_1}{url_2}'
-
-
-def chack_response(response) -> bool:
+def check_response(response) -> bool:
     """
     if response is an instance of
     HttpResponse -> True otherwise -> False.
@@ -350,7 +405,7 @@ async def _run(
     """
     A function passed to the server as an entry point.
     It is responsible for starting routing
-    and returning an http response to the server.
+    and returning a http response to the server.
 
     Note:
         Used when the server built
