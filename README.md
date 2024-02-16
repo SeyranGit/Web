@@ -2,9 +2,9 @@
   <a href="https://www.python.org/">
     <img alt="Python 3.12.2 Release" src="https://www.python.org/static/favicon.ico">
   </a>
-</p>
+</p>  
 
-[![python.svg]](https://www.python.org/)
+[![python.svg]](https://www.python.org/)  
 
 [python.svg]: https://www.svgrepo.com/show/354238/python.svg
 
