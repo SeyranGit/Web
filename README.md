@@ -1,4 +1,4 @@
-[![python.org](https://www.svgrepo.com/show/354238/python.svg)python](https://www.python.org/)
+[[python.org](https://www.svgrepo.com/show/354238/python.svg)python](https://www.python.org/)
 
 
 <p>
