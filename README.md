@@ -1,8 +1,7 @@
 <p>
   <a href="https://www.python.org/">
-    <img alt="python" src="https://www.python.org/static/favicon.ico">
+    <img alt="python 3.12.2" src="https://www.python.org/static/favicon.ico">
   </a>
-  python
 </p>
 
 
