@@ -4,8 +4,9 @@
   </a>
 </p>
 
-[![https://www.svgrepo.com/show/354238/python.svg]](https://www.python.org/)
+[![python.svg]](https://www.python.org/)
 
+[python.svg]: https://www.svgrepo.com/show/354238/python.svg
 
 # **Web**  
 A simple web framework for creating simple web applications with a built-in server intended for use at the development stage. __Web__ also supports [__uvicorn__](https://www.uvicorn.org/).  
