@@ -1,3 +1,5 @@
+[![python](https://www.python.org/)
+
 # **Web**  
 A simple web framework for creating simple web applications with a built-in server intended for use at the development stage. __Web__ also supports [__uvicorn__](https://www.uvicorn.org/).  
 ### **Project structure:**  
