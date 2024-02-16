@@ -16,7 +16,7 @@ MySite
 ---
 
 - run.py
-```
+```python
 from web import Setup
 
 if __name__ == '__main__':
