@@ -15,12 +15,12 @@ MySite
 ```
 The application must be launched from the root directory of the project.  
 Example:  
-```
-...\MySite> python run.py
-```  
-```
-...\MySite> uvicorn MySite.asgi:app
-```
+    ```
+    ...\MySite> python run.py
+    ```  
+    ```
+    ...\MySite> uvicorn MySite.asgi:app
+    ```
 
 ---
 
