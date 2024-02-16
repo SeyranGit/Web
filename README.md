@@ -26,7 +26,7 @@ if __name__ == '__main__':
 ---
 
 - MySite/__init__.py
-```
+```python
 from . import settings
 ```
 ---
