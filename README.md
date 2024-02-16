@@ -2,6 +2,9 @@
   <a href="https://www.python.org">
     <img alt="Python 3.12.2 Release" src="https://www.python.org/static/favicon.ico">
   </a>
+  <a href="https://reactos.org/download/">
+    <img alt="Download ReactOS" src="https://img.shields.io/badge/download-latest-0688CB.svg">
+  </a>
 </p>
 
 
