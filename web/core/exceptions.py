@@ -1,3 +1,13 @@
+__all__ = [
+    'ModuleMissingError',
+    'ApplicationNotFound',
+    'ApplicationNotInit',
+    'InvalidReturnType',
+    'StaticNotFound',
+    'ServerTypeError'
+]
+
+
 class ModuleMissingError(Exception):
     """
     An exception that should be
@@ -34,4 +44,17 @@ class InvalidReturnType(Exception):
         super().__init__(
             f'Return type of the view '
             f"'{view_name}' must be {return_type}."
+        )
+
+
+class StaticNotFound(Exception):
+    def __init__(self):
+        super().__init__('Static file not found.')
+
+
+class ServerTypeError(Exception):
+    def __init__(self, server_type):
+        super().__init__(
+            f"wrong server type {server_type}. "
+            f"Only available 'uvicorn' and 'std'."
         )
