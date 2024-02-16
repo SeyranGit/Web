@@ -1,16 +1,3 @@
-![python.org](python.org)
-
-
-(https://www.svgrepo.com/show/354238/python.svg)
-
-
-<p>
-  <a href="https://www.python.org/">
-    <img alt="python 3.12.2" src="https://www.python.org/static/favicon.ico">
-  </a>
-</p>
-
-
 # **Web**  
 A simple web framework for creating simple web applications with a built-in server intended for use at the development stage. __Web__ also supports [__uvicorn__](https://www.uvicorn.org/).  
 ### **Project structure:**  
