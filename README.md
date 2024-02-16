@@ -15,7 +15,7 @@ MySite
 ```
 ---
 
-- run.py
+- `run.py`
 ```python
 from web import Setup
 
@@ -25,13 +25,13 @@ if __name__ == '__main__':
 ```
 ---
 
-- MySite/__init__.py
+- `MySite/__init__.py`
 ```python
 from . import settings
 ```
 ---
 
-- MySite/settings.py
+- `MySite/settings.py`
 ```python  
 DEBUG = True # False
 TRACING = True # False
@@ -58,7 +58,7 @@ ROOT_URLPATTERNS = [
 ```
 ---
 
-- MySite/asgi.py
+- `MySite/asgi.py`
 ```python  
 from web.core.asgi import asgi_app
 
