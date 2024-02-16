@@ -41,6 +41,21 @@ def pattern_matching(
         pattern: str,
         separator: str
 ) -> dict:
+    """
+    Matches the url with the pattern and
+    if there is a match, returns a dictionary of variables.
+
+    patterns:
+        'good/<path>' == (
+            good/name,
+            good/...
+        ) -> {'path': ...}
+
+        'good/<path>/<var>' == (
+            good/name/age,
+            good/.../...
+        ) -> {'path': ..., 'var': ...}
+    """
     url_catalogs = split_into_catalogs(url, separator)
     pattern_catalogs = split_into_catalogs(pattern, separator)
     coincidence = []
