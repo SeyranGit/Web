@@ -13,7 +13,19 @@ MySite
 |   ├── settings.py
 └── └── asgi.py
 ```
-- settings.py
+---
+
+- run.py
+```
+from web import Setup
+
+if __name__ == '__main__':
+    setup = Setup()
+    setup.run()
+```
+---
+
+- MySite/settings.py
 ```python  
 DEBUG = True # False
 TRACING = True # False
@@ -38,3 +50,5 @@ ROOT_URLPATTERNS = [
     ('app2/', 'app2') 
 ]
 ```
+---
+
