@@ -1,3 +1,5 @@
+[[python](https://www.python.org/static/favicon.ico)](https://www.python.org/)
+
 <p>
   <a href="https://www.python.org/">
     <img alt="python 3.12.2" src="https://www.python.org/static/favicon.ico">
