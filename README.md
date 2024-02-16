@@ -25,6 +25,12 @@ if __name__ == '__main__':
 ```
 ---
 
+- MySite/__init__.py
+```
+from . import settings
+```
+---
+
 - MySite/settings.py
 ```python  
 DEBUG = True # False
@@ -40,7 +46,7 @@ INSTALL_APPS = [
 ]
 
 STATIC_FILE_DIRS = {
-    'app_1': [
+    'app1': [
         ('', '/frontend')
     ]
 }
