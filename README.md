@@ -1,4 +1,5 @@
-[![python](https://www.python.org/static/favicon.ico)][python]
+[python](https://www.svgrepo.com/show/354238/python.svg)
+
 
 <p>
   <a href="https://www.python.org/">
