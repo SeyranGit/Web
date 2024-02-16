@@ -2,7 +2,7 @@
 ### A simple web framework for creating simple web applications.  
 **Project structure**  
 ```
-MySite
+|--- MySite
   - run.py
   - MySite
       - settings.py
