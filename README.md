@@ -1,6 +1,6 @@
-# **Web**
-### A simple web framework for creating simple web applications.  
-**Project structure:**  
+# **Web**  
+A simple web framework for creating simple web applications.  
+### **Project structure:**  
 ```
 MySite
 ├── run.py
