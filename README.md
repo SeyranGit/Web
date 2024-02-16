@@ -1,4 +1,5 @@
 <p>
+  python
   <a href="https://www.python.org/">
     <img alt="python" src="https://www.python.org/static/favicon.ico">
   </a>
