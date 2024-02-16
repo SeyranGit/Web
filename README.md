@@ -4,6 +4,10 @@ A simple web framework for creating simple web applications.
 ```
 MySite
 ├── run.py
+├── app1
+|   ├── __init__.py
+|   ├── urls.py
+|   └── views.py 
 ├── MySite
 |   ├── __init__.py
 |   ├── settings.py
@@ -18,8 +22,8 @@ SERVER_HOST = '0.0.0.0'
 SERVER_PORT = 80
 
 INSTALL_APPS = [
-    'app_1',
-    'app_2',
+    'app1',
+    'app2',
     'app_n'
 ]
 
@@ -30,7 +34,7 @@ STATIC_FILE_DIRS = {
 }
 
 ROOT_URLPATTERNS = [
-    ('', 'app_1'), # (url, app_name)
-    ('app2/', 'app_2') 
+    ('', 'app1'), # (url, app_name)
+    ('app2/', 'app2') 
 ]
 ```
