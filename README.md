@@ -1,7 +1,6 @@
-[[python](https://www.python.org/)](https://www.python.org/)
-<p align=center>
-  <a href="https://reactos.org/project-news/reactos-0414-released/">
-    <img alt="ReactOS 0.4.14 Release" src="https://img.shields.io/badge/release-0.4.14-0688CB.svg">
+<p>
+  <a href="https://www.python.org/">
+    <img alt="python" src="https://www.python.org/static/favicon.ico">
   </a>
 </p>
 
