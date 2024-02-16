@@ -1,6 +1,6 @@
 <p>
   <a href="https://www.python.org">
-    <img alt="Python 3.12.2 Release" src="https://www.svgrepo.com/show/354238/python.svg">
+    <img alt="Python 3.12.2 Release" src="https://www.python.org/static/favicon.ico">
   </a>
 </p>
 
