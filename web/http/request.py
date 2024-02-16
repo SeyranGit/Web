@@ -12,7 +12,7 @@ from typing import (
     NoReturn,
     Union
 )
-from web.http.excaptions import (
+from web.http.exceptions import (
     EmptyHttp,
     HttpSyntaxError
 )
@@ -180,7 +180,7 @@ class HttpRequest(BaseHttp):
                 self
                 .query_string
                 .split('&') if isinstance(self.query_string, str) else []
-            ) if (payload := _payload.split('='))
+            ) if len(payload := _payload.split('=')) == 2
         }
 
     def __repr__(self) -> str:
