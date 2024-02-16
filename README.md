@@ -9,7 +9,28 @@ MySite
 |   ├── settings.py
 └── └── asgi.py
 ```
-
+- settings.py
 ```python  
-from web.core import Setup  
+DEBUG = True # False
+TRACING = True # False
+
+SERVER_HOST = '0.0.0.0'
+SERVER_PORT = 80
+
+INSTALL_APPS = [
+    'app_1',
+    'app_2',
+    'app_n'
+]
+
+STATIC_FILE_DIRS = {
+    'app_1': [
+        ('', '/frontend')
+    ]
+}
+
+ROOT_URLPATTERNS = [
+    ('', 'app_1'), # (url, app_name)
+    ('app2/', 'app_2') 
+]
 ```
