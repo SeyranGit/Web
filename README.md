@@ -58,14 +58,14 @@ INSTALL_APPS = [
 
 STATIC_FILE_DIRS = {
     'main': [
-        sp('admin/', 'frontend/'),
-        sp('admin/good', 'frontend/'),
+        sp('admin/', 'frontend/', media_types={'.html': 'text/html'}),
+        sp('admin/good/', 'frontend/'),
     ]
 }
 
 ROOT_URLPATTERNS = [
-    ('admin/', 'main'),
-    ('girls/', 'girls')
+    ('app/', 'app1'), # (url, app_name)
+    # ...
 ]
 ```
 ---
