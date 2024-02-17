@@ -42,27 +42,30 @@ from . import settings
 
 - `MySite/settings.py`
 ```python  
+from web.core.statics import sp
+
 DEBUG = True # False
 TRACING = True # False
+STOP_ON_EXCEPTION = False  # works only with DEBUG=False
 
-SERVER_HOST = '0.0.0.0'
+SERVER_HOST = '192.168.1.112'
 SERVER_PORT = 80
 
 INSTALL_APPS = [
-    'app1',
-    'app2',
-    'app_n'
+    'main',
+    'girls'
 ]
 
 STATIC_FILE_DIRS = {
-    'app1': [
-        ('', '/frontend')
+    'main': [
+        sp('admin/', 'frontend/'),
+        sp('admin/good', 'frontend/'),
     ]
 }
 
 ROOT_URLPATTERNS = [
-    ('', 'app1'), # (url, app_name)
-    ('app2/', 'app2') 
+    ('admin/', 'main'),
+    ('girls/', 'girls')
 ]
 ```
 ---
