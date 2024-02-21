@@ -99,9 +99,17 @@ class HttpRequest(BaseHttp):
         self.set_payload()
 
     def set_payload(self) -> None:
-        if self.query_string:
+        if (self.method == self.METHOD_GET
+                and self.query_string):
             self.payload.update(
                 self.parse_query_string()
+            )
+
+        elif self.method == self.METHOD_POST:
+            self.payload.update(
+                self.parse_query_string(
+                    unquote(self.body)
+                )
             )
 
     @staticmethod
@@ -130,12 +138,12 @@ class HttpRequest(BaseHttp):
         self.cookies = get_cookies(
             self.headers.get('cookie', '')
         )
-        if '?' in self.path:
+        if '?' in self.path and self.method == self.METHOD_GET:
             index = self.path.index('?')
             self.query_string = unquote(self.path[index + 1:])
             self.path = self.path[:index]
 
-            self.set_payload()
+        self.set_payload()
 
         return self
 
@@ -183,17 +191,22 @@ class HttpRequest(BaseHttp):
             content
         )
 
-    def parse_query_string(self) -> dict:
+    def parse_query_string(
+            self,
+            query_string: Union[str, None] = None
+    ) -> dict:
         """
         The function parses the query string
         and returns the processed dictionary.
         """
+        if query_string is None:
+            query_string = self.query_string
+
         return {
             payload[0]: payload[1]
             for _payload in (
-                self
-                .query_string
-                .split('&') if isinstance(self.query_string, str) else []
+                query_string
+                .split('&') if isinstance(query_string, str) else []
             ) if len(payload := _payload.split('=')) == 2
         }
 
