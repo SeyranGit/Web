@@ -58,11 +58,3 @@ class ServerTypeError(Exception):
             f"Wrong server type {server_type}. "
             f"Only available 'uvicorn' and 'std'."
         )
-
-
-# class ViewNotFoundError(Exception):
-#     def __init__(self, obj):
-#         super().__init__(
-#             f"The {obj} object must have a method "
-#             f"called 'view', which must be of type coroutine."
-#         )
