@@ -37,8 +37,14 @@ class View:
     #         'view method is not defined.'
     #     )
 
+<<<<<<< HEAD
     def as_view(self):
         self_attrs = set(dir(self))
+=======
+    def as_view(self) -> Callable[..., Coroutine[None, None, HttpResponse]]:
+        try:
+            return self.view
+>>>>>>> 99d3f0cf72f2898cd00e7dd4bef7a03de3001f53
 
         user_defined_attrs = (
                 self_attrs - set(dir(object)) -
