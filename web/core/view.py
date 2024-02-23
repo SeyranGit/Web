@@ -2,7 +2,8 @@ from abc import abstractmethod
 from typing import (
     TypedDict,
     Unpack,
-    Coroutine
+    Coroutine,
+    Callable
 )
 from web.http import (
     HttpRequest,
@@ -27,7 +28,7 @@ class View:
             'view method is not defined.'
         )
 
-    def as_view(self):
+    def as_view(self) -> Callable[..., Coroutine[None, None, HttpResponse]]:
         try:
             return self.view
 
