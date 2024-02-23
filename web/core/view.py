@@ -2,7 +2,8 @@ from abc import abstractmethod
 from typing import (
     TypedDict,
     Unpack,
-    Coroutine
+    Coroutine,
+    Callable
 )
 from web.http import (
     HttpRequest,
@@ -17,25 +18,39 @@ class DynamicPath(TypedDict):
 
 
 class View:
-    @abstractmethod
-    async def view(
-            self,
-            request: HttpRequest,
-            **kwargs: Unpack[DynamicPath]
-    ) -> HttpResponse:
-        raise NotImplementedError(
-            'view method is not defined.'
-        )
+    __slots__ = ()
+    _view = None
+    __attrs = (
+        '__module__',
+        '__dict__',
+        '__weakref__',
+        'as_view'
+    )
+
+    # @abstractmethod
+    # async def view(
+    #         self,
+    #         request: HttpRequest,
+    #         **kwargs: Unpack[DynamicPath]
+    # ) -> HttpResponse:
+    #     raise NotImplementedError(
+    #         'view method is not defined.'
+    #     )
 
     def as_view(self):
-        try:
-            if not isinstance(self.view, Coroutine):
-                raise TypeError(
-                    "The 'view' method must "
-                    "be of coroutine type."
-                )
+        self_attrs = set(dir(self))
 
-            return self.view
+        user_defined_attrs = (
+                self_attrs - set(dir(object)) -
+                set()
+        )
+        print(user_defined_attrs)
 
-        except AttributeError as exc:
-            raise ViewNotFoundError(self) from exc
+        user_defined_methods = [
+            attr for attr in user_defined_attrs
+            if isinstance(getattr(self, attr), Callable)
+        ]
+        if user_defined_methods:
+            return getattr(self, user_defined_methods[0])
+
+        raise ViewNotFoundError(self)

@@ -63,5 +63,5 @@ class ServerTypeError(Exception):
 class ViewNotFoundError(Exception):
     def __init__(self, obj):
         super().__init__(
-            f'The object {obj} must have a "view" coroutine.'
+            f'The object {obj} must have a view coroutine.'
         )
