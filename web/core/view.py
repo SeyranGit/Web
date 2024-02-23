@@ -29,12 +29,6 @@ class View:
 
     def as_view(self):
         try:
-            if not isinstance(self.view, Coroutine):
-                raise TypeError(
-                    "The 'view' method must "
-                    "be of coroutine type."
-                )
-
             return self.view
 
         except AttributeError as exc:
