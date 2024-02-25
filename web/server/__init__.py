@@ -24,15 +24,10 @@ async def client_handler(app, coro, _sock):
 
 async def main(app, coro, sock: socket.socket):
     loop = asyncio.get_running_loop()
-    tasks = []
-
     while True:
         _sock, _ = await loop.sock_accept(sock)
-        tasks.append(
-            asyncio.create_task(
-                client_handler(app, coro, _sock)
-            )
-        )
+        result = asyncio.create_task(
+            client_handler(app, coro, _sock))
 
 
 def run_server(app, coro):
