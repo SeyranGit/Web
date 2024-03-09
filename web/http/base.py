@@ -94,6 +94,9 @@ class WebDict(UserDict):
                 'only be bytes and str.'
             )
 
+    def get(self, key, default=None):
+        return super().get(key.lower(), default)
+    
     def __getitem__(self, item: Any) -> KvType:
         return super().__getitem__(item)[1]
 
