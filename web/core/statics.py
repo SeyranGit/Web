@@ -6,6 +6,7 @@ __all__ = [
     'sp'
 ]
 
+import gzip
 from typing import (
     Generator,
     NoReturn,
@@ -151,7 +152,8 @@ class Static:
     __slots__ = (
         'url',
         'path',
-        'content_type'
+        'content_type',
+        'gzip_compression'
     )
 
     url: str
@@ -162,22 +164,32 @@ class Static:
             self,
             url: str,
             path: str,
-            content_type: Union[str, None]
+            content_type: Union[str, None],
+            gzip_compression: bool = False
     ) -> None:
         self.url = url
         self.path = path
         self.content_type = content_type
+        self.gzip_compression = gzip_compression
 
     async def get_http_response(self) -> HttpResponse:
         """
         Returns HttpResponse static file.
         """
+        content = await load_static(self.path)
         return (
             HttpResponse(
                 status=HTTP_STATUS_200,
-                body=await load_static(self.path),
+                body=gzip.compress(content) if self.gzip_compression else content,
                 headers={
-                    'Content-Type': self.content_type or ''
+                    'Content-Type': self.content_type or '',
+                    **(
+                        {
+                            'Content-Encoding': 'gzip',
+                            'Vary': 'Accept-Encoding'
+                        }
+                        if self.gzip_compression else {}
+                    )
                 }
             )
         )
@@ -220,7 +232,8 @@ def get_all_statics(
                     _path,
                     media_types.get(
                         splitext(_path)[-1]
-                    ) or auto_definition(_path)
+                    ) or auto_definition(_path),
+                    gzip_compression=True
                 )
 
             elif path.is_dir():
